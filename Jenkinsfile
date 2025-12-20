@@ -26,20 +26,26 @@ pipeline {
             }
         }
 
-        stage('Security Scan (Trivy)') {
+    
+	stage('Security Scan (Trivy)') {
             steps {
                 sh '''
-                echo "Running Trivy security scan..."
-                docker run --rm \
-                  -v /var/run/docker.sock:/var/run/docker.sock \
-                  aquasec/trivy image \
+       		echo "Running Trivy image scan..."
+
+        	docker run --rm \
+          	  -v /var/run/docker.sock:/var/run/docker.sock \
+          	  aquasec/trivy image \
                   --severity HIGH,CRITICAL \
-                  --format table \
+          	  --format table \
                   --output trivy-image-report.txt \
                   $IMAGE_NAME:latest || true
+
+                  echo "Scan completed"
+                  ls -l trivy-image-report.txt || true
                 '''
-            }
-        }
+    	    }
+	}
+
 
         stage('Docker Login & Push') {
             steps {
