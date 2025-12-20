@@ -4,10 +4,14 @@ pipeline {
     environment {
         DOCKER_USER = 'kiteysa999'
         DOCKER_PASS = credentials('docker-hub-pat')
+        IMAGE_NAME  = 'kiteysa999/projekt360'
+        CONTAINER   = 'projekt360-container'
+        APP_PORT    = '80'
     }
 
     stages {
-        stage('Checkout') {
+
+        stage('Checkout Code') {
             steps {
                 checkout scm
             }
@@ -15,32 +19,71 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_USER/projekt360:latest .'
+                sh '''
+                echo "Building Docker image..."
+                docker build -t $IMAGE_NAME:latest .
+                '''
             }
         }
 
-        stage('Security Scan') {
+        stage('Security Scan (Trivy)') {
             steps {
-                sh 'docker run --rm -v $PWD:/app aquasec/trivy fs --severity HIGH,CRITICAL /app || true'
+                sh '''
+                echo "Running Trivy security scan..."
+                docker run --rm \
+                  -v /var/run/docker.sock:/var/run/docker.sock \
+                  aquasec/trivy image \
+                  --severity HIGH,CRITICAL \
+                  --format table \
+                  --output trivy-image-report.txt \
+                  $IMAGE_NAME:latest || true
+                '''
             }
         }
 
         stage('Docker Login & Push') {
             steps {
                 sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker push $DOCKER_USER/projekt360:latest
+                echo "Logging into Docker Hub..."
+                echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+                echo "Pushing image to Docker Hub..."
+                docker push $IMAGE_NAME:latest
+                '''
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh '''
+                echo "Deploying container..."
+
+                docker rm -f $CONTAINER || true
+
+                docker run -d \
+                  --name $CONTAINER \
+                  -p $APP_PORT:80 \
+                  $IMAGE_NAME:latest
                 '''
             }
         }
     }
 
     triggers {
-        pollSCM('H/1 * * * *') // Poll GitHub every 1 minute
+        pollSCM('* * * * *')
     }
 
     post {
-        always { echo "Pipeline finished" }
+        always {
+            archiveArtifacts artifacts: 'trivy-image-report.txt', fingerprint: true
+            echo "Pipeline completed"
+        }
+        success {
+            echo "Deployment successful "
+        }
+        failure {
+            echo "Pipeline failed "
+        }
     }
 }
 
