@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Landing Page</title>
+    <title>Shift-Left Mindset for Secure CI/CD Ops</title>
     <style>
         body {
             margin: 0;
             font-family: "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             background-color: #f8fafc;
             color: #0f172a;
         }
@@ -38,7 +41,8 @@
         }
 
         main {
-            max-width: 800px;
+            flex: 1;
+            max-width: 900px;
             margin: 4rem auto;
             padding: 0 1.5rem;
             text-align: center;
@@ -52,21 +56,16 @@
         main p {
             font-size: 1.1rem;
             color: #64748b;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
-        main button {
-            padding: 0.7rem 1.5rem;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        main button:hover {
-            background-color: #1e40af;
+        .abstract {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            text-align: left;
         }
 
         footer {
@@ -74,16 +73,13 @@
             color: #cbd5f5;
             text-align: center;
             padding: 1rem;
-            position: relative;
-            bottom: 0;
-            width: 100%;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>My Landing Page</h1>
+        <h1>Shift-Left Seminar Series</h1>
         <nav>
             <a href="#">Home</a>
             <a href="#">About</a>
@@ -92,13 +88,26 @@
     </header>
 
     <main>
-        <h2>Welcome to My Profile</h2>
-        <p>This is a minimal landing page example with a header and footer.</p>
-        <button>Get Started</button>
+        <h2>Hello, Welcome to My Page</h2>
+        <p>Welcome you all to the seminar series on Secure CI/CD Practices.</p>
+
+        <div class="abstract">
+            <h3>Title of the Seminar Talk:</h3>
+            <p><strong>Shift-Left Mindset for Secure CI/CD Ops</strong></p>
+
+            <h3>Abstract:</h3>
+            <p>Security failures rarely occur due to a lack of concern — they occur because security is introduced too late. 
+            In today’s world of rapid releases, cloud-native platforms, and automated CI/CD pipelines, traditional end-stage security simply can’t keep up. 
+            This seminar introduces the Shift-Left mindset, a proactive approach that embeds security early within the software delivery lifecycle. 
+            By integrating automated security checks directly into development and CI/CD workflows, teams can identify risks sooner, reduce costly rework, and deliver secure software at speed.</p>
+
+            <h3>Area of Interest:</h3>
+            <p>Cloud Computing (CloudOps), CI/CD Pipelines & Automation, Best Security Practices, DevSecOps, VAPT, Container Security, GitOps & IaC</p>
+        </div>
     </main>
 
     <footer>
-        &copy; 2025 My Profile. All rights reserved.
+        &copy; 2025 Shift-Left Seminar Series. All rights reserved.
     </footer>
 
 </body>
